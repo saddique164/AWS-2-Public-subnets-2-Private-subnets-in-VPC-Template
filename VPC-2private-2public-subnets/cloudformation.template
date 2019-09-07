@@ -30,7 +30,7 @@
 
 	"Resources" : {
 	    
-	"VPC": {
+	"SaddiqueVPC": {
        "Type": "AWS::EC2::VPC",
 		"Properties": {
         "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "VPC", "CIDR" ] },
@@ -52,7 +52,7 @@
 	"PublicSubnet1": {
       "Type": "AWS::EC2::Subnet",
       "Properties": {
-				"VpcId": { "Ref": "VPC" },
+				"VpcId": { "Ref": "SaddiqueVPC" },
 				"CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "Public1", "CIDR" ] },
 				"AvailabilityZone": {
 				  "Fn::Select": [
@@ -70,14 +70,14 @@
 					"Value": "Public"
 				  }
 				],
-				"MapPublicIpOnLaunch":"yes"
+				"MapPublicIpOnLaunch":"true"
 			  }
     },
 
     "PublicSubnet2": {
        "Type": "AWS::EC2::Subnet",
        "Properties": {
-			   "VpcId": { "Ref": "VPC" },
+			   "VpcId": { "Ref": "SaddiqueVPC" },
 			   "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "Public2", "CIDR" ] },
 			   "AvailabilityZone": {
 				  "Fn::Select": [
@@ -95,7 +95,7 @@
 					"Value": "Public"
 				  }
 				],
-				"MapPublicIpOnLaunch":"yes"
+				"MapPublicIpOnLaunch":"true"
 			         }
 			  
     },
@@ -103,7 +103,7 @@
 	"PrivateSubnet1": {
        "Type": "AWS::EC2::Subnet",
        "Properties": {
-				   "VpcId": { "Ref": "VPC" },
+				   "VpcId": { "Ref": "SaddiqueVPC" },
 				   "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "Private1", "CIDR" ] },
 				   "AvailabilityZone": {
 					  "Fn::Select": [
@@ -128,7 +128,7 @@
   "PrivateSubnet2": {
 			"Type": "AWS::EC2::Subnet",
 			"Properties": {
-				   "VpcId": { "Ref": "VPC" },
+				   "VpcId": { "Ref": "SaddiqueVPC" },
 				   "CidrBlock": { "Fn::FindInMap": [ "SubnetConfig", "Private2", "CIDR" ] },
 				   "AvailabilityZone": {
 					  "Fn::Select": [
@@ -170,7 +170,7 @@
 			 
 			 "Type": "AWS::EC2::VPCGatewayAttachment",
 			  "Properties": {
-			  "VpcId": { "Ref": "VPC" },
+			  "VpcId": { "Ref": "SaddiqueVPC" },
 			  "InternetGatewayId": { "Ref": "InternetGateway" }
 			 
 			  }
@@ -179,7 +179,7 @@
   "PublicRouteTable": {
 			  "Type": "AWS::EC2::RouteTable",
 			  "Properties": {
-					"VpcId": { "Ref": "VPC" },
+					"VpcId": { "Ref": "SaddiqueVPC" },
 					"Tags": [
 					  {
 						"Key": "Application",
@@ -199,8 +199,8 @@
 			  "DependsOn": "GatewayToInternet",
 			  "Properties": {
 				"RouteTableId": { "Ref": "PublicRouteTable" },
-				"DestinationCidrBlock": "10.0.0.0/16",
-				"GatewayId": { "Ref": "InternetGateway" }
+				"DestinationCidrBlock": "0.0.0.0/0",
+				"GatewayId" : { "Ref" : "InternetGateway" }
 			  }
 			},
 
@@ -223,7 +223,7 @@
 	"PublicNetworkAcl": {
 			  "Type": "AWS::EC2::NetworkAcl",
 			  "Properties": {
-					"VpcId": { "Ref": "VPC" },
+					"VpcId": { "Ref": "SaddiqueVPC" },
 					"Tags": [
 					  {
 						"Key": "Application",
@@ -333,16 +333,7 @@
 			   "Properties" : {
 				  "Domain" : "VPC"
 			  }
-			},
-
-	 "Route" : {
-		   "Type" : "AWS::EC2::Route",
-		   "Properties" : {
-			  "RouteTableId" : { "Ref" : "PublicRouteTable" },
-			  "DestinationCidrBlock" : "0.0.0.0/0",
-			  "NatGatewayId" : { "Ref" : "NATGateway" }
-			   }
-			}
+			}			
 
 },
 
